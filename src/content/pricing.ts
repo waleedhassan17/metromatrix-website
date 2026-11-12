@@ -1,0 +1,153 @@
+import type { PricingContent } from "./types";
+
+export const pricing: PricingContent = {
+  eyebrow: "Pricing",
+  title: "Flat monthly plans. Never a cut of your sales.",
+  intro:
+    "Every plan is free while we launch in Lahore. After launch, partners pay a flat subscription for the tools and keep 100% of every order.",
+  launchBanner: {
+    title: "Free during launch",
+    detail:
+      "No fees while MetroMatrix launches in Lahore. Planned pricing is shown so you can plan ahead and is subject to change.",
+  },
+  founderNote:
+    "Founder rates: partners who join during launch lock in a discount on their plan when subscriptions begin.",
+  disclaimer: "Free during launch. Planned pricing, subject to change.",
+  highlightLabel: "Used in the savings example",
+  plans: [
+    {
+      id: "home-kitchen",
+      inCalculator: true,
+      name: "Home Kitchen",
+      audience: "For home cooks",
+      tone: "food",
+      price: 1500,
+      currency: "PKR",
+      period: "month",
+      description: "Sell what you cook today with the tools built for a home kitchen.",
+      features: [
+        "Verified home-kitchen storefront",
+        "“Cooking today” menu",
+        "Portion limits and pre-order slots",
+        "Cash on delivery or direct transfer",
+      ],
+      cta: {
+        label: "Reserve founder pricing",
+        href: "/?role=home-kitchen#contact",
+        role: "home-kitchen",
+      },
+    },
+    {
+      id: "restaurant-starter",
+      inCalculator: true,
+      name: "Restaurant Starter",
+      audience: "For single-location restaurants and food vendors",
+      tone: "food",
+      price: 3000,
+      currency: "PKR",
+      period: "month",
+      description: "A full storefront with add-ons, direct payment and live tracking.",
+      features: [
+        "Verified restaurant storefront",
+        "Item add-ons",
+        "Live order tracking",
+        "Rider view for your own riders",
+      ],
+      cta: {
+        label: "Reserve founder pricing",
+        href: "/?role=restaurant#contact",
+        role: "restaurant",
+      },
+    },
+    {
+      id: "restaurant-pro",
+      inCalculator: true,
+      name: "Restaurant Pro",
+      audience: "For high-volume kitchens and growing teams",
+      tone: "food",
+      price: 6000,
+      currency: "PKR",
+      period: "month",
+      description:
+        "Everything in Starter, sized for busy kitchens and larger rider teams.",
+      features: [
+        "Everything in Restaurant Starter",
+        "Built for high order volumes",
+        "Multiple riders on the rider view",
+        "Priority verification and support",
+      ],
+      cta: {
+        label: "Reserve founder pricing",
+        href: "/?role=restaurant#contact",
+        role: "restaurant",
+      },
+      highlighted: true,
+    },
+    {
+      id: "doctor",
+      name: "Doctor",
+      audience: "For individual practitioners",
+      tone: "health",
+      price: 2500,
+      currency: "PKR",
+      period: "month",
+      description: "A verified profile with video and clinic bookings and reminders.",
+      features: [
+        "PMDC-verified profile",
+        "Video and clinic appointments",
+        "Appointment reminders",
+        "Patients' private health records",
+      ],
+      cta: {
+        label: "Reserve founder pricing",
+        href: "/?role=doctor#contact",
+        role: "doctor",
+      },
+    },
+    {
+      id: "clinic",
+      name: "Clinic",
+      audience: "For clinics with several doctors",
+      tone: "health",
+      price: 8000,
+      currency: "PKR",
+      period: "month",
+      description: "One listing for your clinic with bookings across all of its doctors.",
+      features: [
+        "Clinic profile with multiple doctors",
+        "Shared appointment calendar",
+        "Reminders for every booking",
+        "Verification for each practitioner",
+      ],
+      cta: {
+        label: "Reserve founder pricing",
+        href: "/?role=doctor#contact",
+        role: "doctor",
+      },
+    },
+    {
+      id: "brand-store",
+      inCalculator: true,
+      name: "Brand Store",
+      audience: "For brands and retailers",
+      tone: "shop",
+      price: 3000,
+      priceMax: 7500,
+      currency: "PKR",
+      period: "month",
+      description:
+        "A verified brand store with your story, categories and direct orders.",
+      features: [
+        "Verified brand storefront",
+        "Brand story and categories",
+        "Bag, wishlist and order history",
+        "Range depends on store size; tiers to be announced",
+      ],
+      cta: {
+        label: "Reserve founder pricing",
+        href: "/?role=brand#contact",
+        role: "brand",
+      },
+    },
+  ],
+};
