@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
 import type { Cta, NavLink } from "@/content/types";
@@ -30,6 +30,31 @@ export function Navbar({ links, cta, siteName }: NavbarProps) {
   const sectionIds = links.map((l) => l.href.replace(/^\/?#/, ""));
   const active = useActiveSection(onHome ? sectionIds : []);
 
+  // One pill that slides to the active link instead of each link lighting up
+  // on its own. Positioned from the link's box; read only when `active` changes.
+  const pillRef = useRef<HTMLSpanElement>(null);
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  useEffect(() => {
+    const pill = pillRef.current;
+    if (!pill) return;
+    const el = active ? linkRefs.current[active] : null;
+    if (!el) {
+      pill.style.opacity = "0";
+      return;
+    }
+    const wasHidden = pill.style.opacity !== "1";
+    if (wasHidden) pill.style.transition = "none";
+    pill.style.width = `${el.offsetWidth}px`;
+    // The link is positioned inside its <li>; measure the <li> against the list.
+    const item = (el.parentElement ?? el) as HTMLElement;
+    pill.style.transform = `translateX(${item.offsetLeft}px)`;
+    pill.style.opacity = "1";
+    if (wasHidden) {
+      void pill.offsetWidth; // apply the jump before re-enabling the slide
+      pill.style.transition = "";
+    }
+  }, [active]);
+
   const resolveHref = useCallback(
     (href: NavLink["href"]) => (href.startsWith("#") && !onHome ? `/${href}` : href),
     [onHome],
@@ -40,16 +65,20 @@ export function Navbar({ links, cta, siteName }: NavbarProps) {
       <header
         data-theme={dark ? "dark" : undefined}
         className={cn(
-          "fixed inset-x-0 top-0 z-40 border-b transition-[background-color,border-color] duration-300",
+          "fixed inset-x-0 top-0 z-40 border-b transition-[background-color,border-color,box-shadow] duration-300",
           dark
             ? scrolled
               ? "border-white/10 bg-[#0f1a17]/85 backdrop-blur-md"
               : "border-transparent bg-transparent"
-            : "border-line bg-[#fafaf7]/90 backdrop-blur-md",
+            : "border-line bg-[#fafaf7]/90 shadow-[0_10px_30px_-24px_rgb(15_26_23/0.45)] backdrop-blur-md",
         )}
       >
         <Container className="flex h-16 items-center justify-between gap-6 sm:h-[72px]">
-          <Link href="/" className="rounded-md" aria-label={`${siteName} home`}>
+          <Link
+            href="/"
+            className="inline-flex h-11 items-center rounded-md"
+            aria-label={`${siteName} home`}
+          >
             <Logo
               variant="dark"
               height={26}
@@ -65,23 +94,35 @@ export function Navbar({ links, cta, siteName }: NavbarProps) {
           </Link>
 
           <nav aria-label="Primary" className="hidden lg:block">
-            <ul className="flex items-center gap-1">
+            <ul className="relative flex items-center gap-1">
+              <span
+                ref={pillRef}
+                aria-hidden="true"
+                style={{ opacity: 0 }}
+                className={cn(
+                  "absolute top-0 left-0 h-10 rounded-full transition-[transform,width,opacity,background-color] duration-300 ease-out-soft",
+                  dark ? "bg-white/10" : "bg-brand-soft",
+                )}
+              />
               {links.map((link) => {
                 const id = link.href.replace(/^\/?#/, "");
                 const isActive = active === id;
                 return (
-                  <li key={link.href}>
+                  <li key={link.href} className="relative">
                     <Link
+                      ref={(el) => {
+                        linkRefs.current[id] = el;
+                      }}
                       href={resolveHref(link.href)}
                       aria-current={isActive ? "location" : undefined}
                       className={cn(
-                        "rounded-full px-3.5 py-2 text-label-md transition-colors",
+                        "inline-flex h-10 items-center rounded-full px-3.5 text-label-md transition-colors duration-(--dur-base)",
                         dark
                           ? isActive
-                            ? "bg-white/10 text-white"
+                            ? "text-white"
                             : "text-white/75 hover:text-white"
                           : isActive
-                            ? "bg-brand-soft text-brand-deep"
+                            ? "text-brand-deep"
                             : "text-muted hover:text-ink",
                       )}
                     >
@@ -94,7 +135,7 @@ export function Navbar({ links, cta, siteName }: NavbarProps) {
           </nav>
 
           <div className="flex items-center gap-2">
-            <div className="hidden lg:block">
+            <div className="hidden sm:block">
               <Button href={cta.href} size="sm">
                 {cta.label}
               </Button>

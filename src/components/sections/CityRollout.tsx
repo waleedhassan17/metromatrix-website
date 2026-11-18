@@ -15,7 +15,27 @@ export function CityRollout({ title, intro, stages, cities }: CityRolloutProps) 
     <div className="rounded-(--radius-panel) border border-line bg-surface p-6 shadow-card sm:p-10">
       <h3 className="text-display-sm text-ink">{title}</h3>
       <p className="mt-2 text-body-md text-muted">{intro}</p>
-      <ol className="mt-8 grid gap-4 lg:grid-cols-[1fr_1.6fr_1fr]">
+      {/* Desktop timeline: a node per stage on a track that draws from Lahore
+          outwards when the panel scrolls in (draw-line, keyed on Reveal). */}
+      <div
+        aria-hidden="true"
+        className="relative mt-10 hidden lg:grid lg:grid-cols-[1fr_1.6fr_1fr] lg:gap-4"
+      >
+        <span className="absolute top-[calc(50%-0.5px)] right-0 left-0 h-px draw-line bg-line-strong" />
+        {stages.map((stage) => (
+          <span key={stage.id} className="relative flex">
+            <span
+              className={cn(
+                "size-3 rounded-full border-2",
+                stage.id === "launching"
+                  ? "border-brand bg-brand"
+                  : "border-line-strong bg-surface",
+              )}
+            />
+          </span>
+        ))}
+      </div>
+      <ol className="mt-8 grid gap-4 lg:mt-5 lg:grid-cols-[1fr_1.6fr_1fr]">
         {stages.map((stage, i) => {
           const list = cities.filter((c) => c.stage === stage.id);
           const first = stage.id === "launching";

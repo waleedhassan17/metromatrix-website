@@ -30,7 +30,10 @@ export function Card({
         "rounded-(--radius-card) border bg-surface shadow-card",
         accent ? "border-(--service) ring-1 ring-(--service)" : "border-line",
         pads[padding],
-        interactive && "transition-shadow duration-300 hover:shadow-card-hover",
+        // Actionable cards lift 2px with a deeper shadow; keyboard focus inside
+        // the card gets the same treatment as a pointer hover.
+        interactive &&
+          "transition-[transform,box-shadow,border-color] duration-300 ease-out-soft focus-within:border-line-strong focus-within:shadow-card-hover hover:border-line-strong hover:shadow-card-hover motion-safe:focus-within:-translate-y-0.5 motion-safe:hover:-translate-y-0.5",
         className,
       )}
     >

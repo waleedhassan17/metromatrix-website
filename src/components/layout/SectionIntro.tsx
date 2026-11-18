@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Reveal } from "@/components/ui/Reveal";
 import { cn } from "@/lib/utils";
 
 interface SectionIntroProps {
@@ -25,7 +26,9 @@ export function SectionIntro({
   className,
 }: SectionIntroProps) {
   return (
-    <div
+    // Overline, heading and lede rise in sequence when the section enters.
+    <Reveal
+      stagger
       className={cn(
         "flex flex-col",
         align === "center" ? "items-center text-center" : "items-start",
@@ -41,7 +44,7 @@ export function SectionIntro({
       >
         {title}
       </h2>
-      {intro && <p className="mt-4 max-w-[640px] text-body-lg text-muted">{intro}</p>}
-    </div>
+      {intro && <p className="mt-4 max-w-[64ch] text-body-lg text-muted">{intro}</p>}
+    </Reveal>
   );
 }

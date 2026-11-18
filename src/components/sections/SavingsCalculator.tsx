@@ -105,7 +105,7 @@ export function SavingsCalculator({ labels, example, footnote }: SavingsCalculat
       <div className="flex flex-col rounded-(--radius-panel) border border-line bg-surface p-6 sm:p-8">
         <p className="text-label-md text-muted">{labels.extraKept}</p>
         <p className="mt-2 text-hero-md text-mint tabular-nums sm:text-hero-lg">
-          <AnimatedNumber value={result.extraKept} format={formatPKR} />
+          <AnimatedNumber value={result.extraKept} format={formatPKR} countUp />
         </p>
         <p className="sr-only" aria-live="polite" aria-atomic="true">
           {announced}
@@ -202,13 +202,16 @@ function Bar({
         </span>
       </div>
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-line">
-        <div
-          className={cn(
-            "h-full rounded-full transition-[width] duration-500 ease-out-soft",
-            barClass,
-          )}
-          style={{ width: `${pct}%` }}
-        />
+        {/* Grows in with the section's reveal (draw-bar), then follows the sliders. */}
+        <div className="h-full draw-bar">
+          <div
+            className={cn(
+              "h-full rounded-full transition-[width] duration-500 ease-out-soft",
+              barClass,
+            )}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
       </div>
     </div>
   );

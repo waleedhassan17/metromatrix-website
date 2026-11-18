@@ -134,9 +134,16 @@
   --text-overline--font-weight: 600;
   --text-overline--letter-spacing: 0.6px;
 
-  /* Section rhythm */
+  /* Section rhythm: phone → tablet → desktop */
+  --spacing-section-sm: 64px;
   --spacing-section: 88px;
   --spacing-section-lg: 120px;
+
+  /* Motion: one timing scale. Exits are faster than entrances. */
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur-base: 240ms;
+  --dur-slow: 600ms;
 }
 
 /* Fonts come from next/font as CSS variables on <html>. */
@@ -222,8 +229,10 @@
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
       scroll-behavior: auto !important;
     }
   }
@@ -310,7 +319,8 @@
   --thumb: 22px;
   appearance: none;
   width: 100%;
-  height: var(--thumb);
+  /* 44px touch target around a 22px visual thumb */
+  height: 44px;
   background: transparent;
   cursor: pointer;
   touch-action: pan-y;
@@ -374,5 +384,96 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ══ Motion ═══════════════════════════════════════════════════════
+   Transform and opacity only. Everything here is cancelled by the
+   reduced-motion rule in the base layer.
+   ══════════════════════════════════════════════════════════════════ */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise, 14px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes draw-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes draw-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Hero entrance: pure CSS on first paint, no JS. The h1 is never animated
+   (it is the LCP element); its neighbours rise in sequence via --i. */
+@utility hero-enter {
+  animation: rise var(--dur-slow) var(--ease-out-soft) both;
+  animation-delay: calc(80ms + var(--i, 0) * 90ms);
+}
+@utility hero-device-enter {
+  --rise: 28px;
+  animation: rise 900ms var(--ease-out-soft) both;
+  animation-delay: 220ms;
+}
+
+/* Lines that draw when their Reveal wrapper enters the viewport.
+   Reveal sets data-reveal="pending" (off screen) then "done". Elements that
+   were already on screen at load are never touched, so nothing flashes. */
+@utility draw-line {
+  transform-origin: top left;
+  [data-reveal="pending"] & {
+    transform: scaleY(0);
+  }
+  [data-reveal="done"] & {
+    animation: draw-y 1100ms var(--ease-out-soft) 150ms both;
+  }
+  @media (min-width: 1024px) {
+    [data-reveal="pending"] & {
+      transform: scaleX(0);
+    }
+    [data-reveal="done"] & {
+      animation-name: draw-x;
+    }
+  }
+}
+@utility draw-bar {
+  transform-origin: left;
+  [data-reveal="pending"] & {
+    transform: scaleX(0);
+  }
+  [data-reveal="done"] & {
+    animation: draw-x 1000ms var(--ease-out-soft) 250ms both;
+  }
+}
+
+/* Check mark that draws itself (contact success). */
+@utility draw-stroke {
+  & path,
+  & circle {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: dash 700ms var(--ease-out-soft) forwards;
+  }
+  & path {
+    animation-delay: 350ms;
   }
 }

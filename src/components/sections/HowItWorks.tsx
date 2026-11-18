@@ -13,7 +13,8 @@ interface HowItWorksProps {
 export function HowItWorks({ eyebrow, title, intro, audiences }: HowItWorksProps) {
   return (
     <Section id="how-it-works" eyebrow={eyebrow} title={title} intro={intro}>
-      <Reveal>
+      {/* Steps rise in order and the connector draws (data-reveal on this wrapper). */}
+      <Reveal stagger targets=":scope ol > li">
         <HowItWorksToggle audiences={audiences} />
       </Reveal>
     </Section>

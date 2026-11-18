@@ -38,7 +38,7 @@ interface NativeButtonProps
 export type ButtonProps = LinkButtonProps | NativeButtonProps;
 
 const base =
-  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full whitespace-nowrap transition-[background-color,color,border-color] duration-200 ease-out-soft select-none disabled:cursor-not-allowed disabled:opacity-60";
+  "group/btn inline-flex cursor-pointer items-center justify-center gap-2 rounded-full whitespace-nowrap transition-[background-color,color,border-color,transform] duration-(--dur-fast) ease-out-soft select-none motion-safe:active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60";
 
 const variants: Record<Variant, string> = {
   primary: "bg-brand text-white hover:bg-[#04684b]",
@@ -74,7 +74,12 @@ export function Button(props: ButtonProps) {
     <>
       {leading}
       <span>{children}</span>
-      {trailing}
+      {trailing && (
+        // The trailing arrow nudges forward on hover/focus: "this moves you on".
+        <span className="inline-flex transition-transform duration-(--dur-base) ease-out-soft group-hover/btn:translate-x-0.5 group-focus-visible/btn:translate-x-0.5">
+          {trailing}
+        </span>
+      )}
     </>
   );
 

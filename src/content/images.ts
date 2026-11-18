@@ -54,13 +54,21 @@ export const screens = {
 } satisfies Record<string, ImageAsset>;
 
 /** The app's own service card photos (licences: scripts/screen-photos/CREDITS.md). */
+// `focus` keeps the subject in frame when a card crops the photo tall and
+// narrow (tablet layout): the burger, the doctor, the nearer shopper.
 export const servicePhotos = {
-  food: asset(foodPhoto, "A smash burger and fries on a dark table"),
-  health: asset(
-    healthPhoto,
-    "A doctor and a colleague reviewing information on a screen",
-  ),
-  shopping: asset(shoppingPhoto, "Two shoppers smiling in a busy shopping centre"),
+  food: {
+    ...asset(foodPhoto, "A smash burger and fries on a dark table"),
+    focus: "78% 50%",
+  },
+  health: {
+    ...asset(healthPhoto, "A doctor and a colleague reviewing information on a screen"),
+    focus: "52% 25%",
+  },
+  shopping: {
+    ...asset(shoppingPhoto, "Two shoppers smiling in a busy shopping centre"),
+    focus: "30% 35%",
+  },
 } satisfies Record<string, ImageAsset>;
 
 export const appIcon: ImageAsset = {

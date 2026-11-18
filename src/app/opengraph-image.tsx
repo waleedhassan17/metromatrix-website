@@ -8,12 +8,12 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function OpengraphImage() {
-  const file = (p: string) => readFile(join(process.cwd(), p));
+  // Literal, folder-scoped paths so the bundler traces only these files.
   const [screen, lockup, display, body] = await Promise.all([
-    file("public/screens/home.png"),
-    file("public/brand/metromatrix-horizontal-dark.svg"),
-    file("assets/fonts/instrument-sans-latin-600.woff"),
-    file("assets/fonts/roboto-latin-400.woff"),
+    readFile(join(process.cwd(), "public", "screens", "home.png")),
+    readFile(join(process.cwd(), "public", "brand", "metromatrix-horizontal-dark.svg")),
+    readFile(join(process.cwd(), "assets", "fonts", "instrument-sans-latin-600.woff")),
+    readFile(join(process.cwd(), "assets", "fonts", "roboto-latin-400.woff")),
   ]);
   const screenUri = `data:image/png;base64,${screen.toString("base64")}`;
   const lockupUri = `data:image/svg+xml;base64,${lockup.toString("base64")}`;

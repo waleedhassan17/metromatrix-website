@@ -1,5 +1,7 @@
 import { Section } from "@/components/layout/Section";
 import { PhoneFrame } from "@/components/ui/PhoneFrame";
+import { Reveal } from "@/components/ui/Reveal";
+import { SnapRow } from "@/components/ui/SnapRow";
 import type { Service } from "@/content/types";
 import { cn, toneClass } from "@/lib/utils";
 
@@ -10,45 +12,44 @@ interface AppShowcaseProps {
 }
 
 /**
- * One iPhone per service. On phones the devices sit in a swipeable row that
- * scrolls inside its own region (never the page); from 768px they stand side
- * by side.
+ * One iPhone per service. Phones swipe between the devices; from 768px they
+ * stand side by side, the middle one raised so the row reads as composed.
  */
 export function AppShowcase({ title, intro, services }: AppShowcaseProps) {
+  const devices = services.map((s, i) => (
+    <div
+      key={s.id}
+      className={cn(
+        toneClass[s.id],
+        "flex w-full flex-col items-center",
+        i === 1 && "md:-translate-y-6",
+      )}
+    >
+      <PhoneFrame image={s.screen} className="w-[232px] lg:w-[264px]" sizes="264px" />
+      <p className="mt-6 flex items-center gap-2 text-h4 text-ink">
+        <span
+          className="inline-flex size-2 rounded-full bg-(--service)"
+          aria-hidden="true"
+        />
+        {s.name}
+      </p>
+      <p className="mt-1 max-w-[260px] text-center text-body-sm text-muted">
+        {s.tagline}
+      </p>
+    </div>
+  ));
+
   return (
     <Section id="app" eyebrow="The app" title={title} intro={intro} tone="sand">
-      <div
-        role="region"
-        aria-label="App screens"
-        tabIndex={0}
-        className="-mx-4 flex snap-x snap-mandatory gap-6 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0"
-      >
-        {services.map((s) => (
-          <div
-            key={s.id}
-            className={cn(
-              toneClass[s.id],
-              "flex shrink-0 snap-center flex-col items-center",
-            )}
-          >
-            <PhoneFrame
-              image={s.screen}
-              className="w-[232px] lg:w-[260px]"
-              sizes="260px"
-            />
-            <p className="mt-6 flex items-center gap-2 text-h4 text-ink">
-              <span
-                className="inline-flex size-2 rounded-full bg-(--service)"
-                aria-hidden="true"
-              />
-              {s.name}
-            </p>
-            <p className="mt-1 max-w-[260px] text-center text-body-sm text-muted">
-              {s.tagline}
-            </p>
-          </div>
-        ))}
-      </div>
+      <Reveal stagger={0.1} targets=":scope ul > li">
+        <SnapRow
+          label="App screens"
+          items={devices}
+          keys={services.map((s) => s.id)}
+          until="md"
+          gridClassName="md:grid-cols-3 md:pt-6"
+        />
+      </Reveal>
     </Section>
   );
 }

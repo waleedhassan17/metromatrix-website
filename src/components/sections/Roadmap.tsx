@@ -1,6 +1,7 @@
 import { Section } from "@/components/layout/Section";
 import { Card } from "@/components/ui/Card";
 import { Reveal } from "@/components/ui/Reveal";
+import { SnapRow } from "@/components/ui/SnapRow";
 import { StatusChip } from "@/components/ui/StatusChip";
 import type { City, CityStage, RoadmapColumn } from "@/content/types";
 import { CityRollout } from "./CityRollout";
@@ -21,10 +22,13 @@ interface RoadmapProps {
 export function Roadmap({ eyebrow, title, intro, columns, rollout }: RoadmapProps) {
   return (
     <Section id="roadmap" eyebrow={eyebrow} title={title} intro={intro}>
-      <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {columns.map((col, i) => (
-          <Reveal as="li" key={col.status} delay={i * 0.06} className="flex">
-            <Card className="flex w-full flex-col" padding="md">
+      <Reveal stagger targets=":scope ul > li">
+        <SnapRow
+          label="Roadmap"
+          keys={columns.map((c) => c.status)}
+          gridClassName="sm:grid-cols-2 lg:grid-cols-4"
+          items={columns.map((col, i) => (
+            <Card key={col.status} className="flex w-full flex-col" padding="md">
               <div className="flex items-center justify-between gap-3">
                 <StatusChip status={col.status} label={col.label} />
                 <span className="text-caption text-muted tabular-nums" aria-hidden="true">
@@ -43,9 +47,9 @@ export function Roadmap({ eyebrow, title, intro, columns, rollout }: RoadmapProp
                 ))}
               </ul>
             </Card>
-          </Reveal>
-        ))}
-      </ol>
+          ))}
+        />
+      </Reveal>
       <Reveal className="mt-14">
         <CityRollout {...rollout} />
       </Reveal>

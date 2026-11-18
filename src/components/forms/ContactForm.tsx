@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import {
   Suspense,
   useCallback,
@@ -154,10 +154,23 @@ export function ContactForm({ roles, cities, copy, fallbackEmail }: ContactFormP
         ref={successRef}
         tabIndex={-1}
         role="status"
-        className="flex flex-col items-start gap-4 py-6 focus:outline-none"
+        className="flex flex-col items-start gap-4 py-6 focus:outline-none motion-safe:animate-[rise_500ms_var(--ease-out-soft)_both]"
       >
         <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-brand-soft text-brand-deep">
-          <CheckCircle2 className="size-6" aria-hidden="true" />
+          {/* The ring and the tick draw themselves (draw-stroke). */}
+          <svg
+            viewBox="0 0 24 24"
+            className="size-6 draw-stroke"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" pathLength={1} />
+            <path d="m8.5 12.5 2.5 2.5 4.5-5" pathLength={1} />
+          </svg>
         </span>
         <h3 className="text-display-sm text-ink">{copy.successTitle}</h3>
         <p className="text-body-md text-muted">{copy.successDetail}</p>

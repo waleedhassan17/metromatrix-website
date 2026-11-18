@@ -4,9 +4,10 @@ import { Instrument_Sans, Roboto } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Footer } from "@/components/layout/Footer";
+import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { Navbar } from "@/components/layout/Navbar";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { footer, hero, navLinks, primaryCta, seo, site } from "@/content/site";
+import { footer, hero, mobileCta, navLinks, primaryCta, seo, site } from "@/content/site";
 import { publicEnv } from "@/lib/env";
 import "@/styles/globals.css";
 
@@ -101,6 +102,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             columns={footer.columns}
             contactEmail={site.contact.email}
             year={new Date().getFullYear()}
+          />
+        </Suspense>
+        <Suspense>
+          <MobileCtaBar
+            cta={primaryCta}
+            note={mobileCta.note}
+            detail={mobileCta.detail}
           />
         </Suspense>
         {publicEnv.NEXT_PUBLIC_ENABLE_ANALYTICS && (

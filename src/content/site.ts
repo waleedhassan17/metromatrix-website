@@ -222,3 +222,9 @@ export const footer = {
     { label: "Terms", href: "/terms" },
   ] satisfies NavLink[],
 };
+
+/** The sticky call-to-action bar on phones (home page only). */
+export const mobileCta = {
+  note: "Free during launch",
+  detail: "Launching in Lahore",
+};

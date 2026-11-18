@@ -68,6 +68,8 @@ export interface ImageAsset {
   alt: string;
   width: number;
   height: number;
+  /** Focal point for tight crops (CSS object-position), e.g. "75% 50%". */
+  focus?: string;
 }
 
 export interface StoreBadge {

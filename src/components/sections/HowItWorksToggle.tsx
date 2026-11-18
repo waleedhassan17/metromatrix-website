@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import type { HowItWorksAudience } from "@/content/types";
 import { cn } from "@/lib/utils";
 
@@ -10,12 +10,34 @@ interface HowItWorksToggleProps {
 
 export function HowItWorksToggle({ audiences }: HowItWorksToggleProps) {
   const [index, setIndex] = useState(0);
+  // Steps replay their entrance only after the visitor switches audience;
+  // the first showing is handled by the section's scroll reveal.
+  const [switched, setSwitched] = useState(false);
   const baseId = useId();
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
+  const pillRef = useRef<HTMLSpanElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // The selected-tab background is one pill that slides between tabs.
+  useEffect(() => {
+    const pill = pillRef.current;
+    const tab = tabs.current[index];
+    if (!pill || !tab) return;
+    pill.style.width = `${tab.offsetWidth}px`;
+    pill.style.transform = `translateX(${tab.offsetLeft - 4}px)`;
+    // Until the pill is placed, the selected tab paints its own ink background
+    // (server render, no JS); from here the pill takes over.
+    listRef.current?.setAttribute("data-ready", "");
+  }, [index]);
+
+  const select = (i: number) => {
+    if (i !== index) setSwitched(true);
+    setIndex(i);
+  };
 
   const move = (i: number) => {
     const next = (i + audiences.length) % audiences.length;
-    setIndex(next);
+    select(next);
     tabs.current[next]?.focus();
   };
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
@@ -37,10 +59,16 @@ export function HowItWorksToggle({ audiences }: HowItWorksToggleProps) {
   return (
     <div>
       <div
+        ref={listRef}
         role="tablist"
         aria-label="Choose an audience"
-        className="inline-flex rounded-full border border-line bg-surface p-1"
+        className="group/tabs relative inline-flex rounded-full border border-line bg-surface p-1"
       >
+        <span
+          ref={pillRef}
+          aria-hidden="true"
+          className="absolute top-1 left-1 h-11 w-0 rounded-full bg-ink opacity-0 transition-[transform,width] duration-300 ease-out-soft group-data-[ready]/tabs:opacity-100"
+        />
         {audiences.map((a, i) => {
           const selected = i === index;
           return (
@@ -55,11 +83,13 @@ export function HowItWorksToggle({ audiences }: HowItWorksToggleProps) {
               aria-selected={selected}
               aria-controls={`${baseId}-panel-${a.id}`}
               tabIndex={selected ? 0 : -1}
-              onClick={() => setIndex(i)}
+              onClick={() => select(i)}
               onKeyDown={(e) => onKeyDown(e, i)}
               className={cn(
-                "cursor-pointer rounded-full px-5 py-2.5 text-label-md transition-colors",
-                selected ? "bg-ink text-ivory" : "text-muted hover:text-ink",
+                "relative inline-flex h-11 cursor-pointer items-center rounded-full px-5 text-label-md transition-colors duration-(--dur-base)",
+                selected
+                  ? "bg-ink text-ivory group-data-[ready]/tabs:bg-transparent"
+                  : "text-muted hover:text-ink",
               )}
             >
               {a.label}
@@ -79,16 +109,24 @@ export function HowItWorksToggle({ audiences }: HowItWorksToggleProps) {
         >
           <p className="max-w-2xl text-body-lg text-muted">{a.intro}</p>
           <ol className="relative mt-10 grid gap-6 lg:grid-cols-5 lg:gap-4">
-            {/* connecting line */}
+            {/* Connecting line: draws in with the reveal (and again on switch). */}
             <span
               aria-hidden="true"
-              className="absolute top-0 bottom-0 left-[1.375rem] w-px bg-line lg:top-[1.375rem] lg:right-0 lg:bottom-auto lg:left-0 lg:h-px lg:w-auto"
+              className={cn(
+                "absolute top-0 bottom-0 left-[1.375rem] w-px draw-line bg-line-strong lg:top-[1.375rem] lg:right-0 lg:bottom-auto lg:left-0 lg:h-px lg:w-auto",
+                switched &&
+                  "motion-safe:animate-[draw-y_900ms_var(--ease-out-soft)_both] lg:motion-safe:animate-[draw-x_900ms_var(--ease-out-soft)_both]",
+              )}
             />
             {a.steps.map((step, n) => (
               <li
                 key={step.title}
-                className="relative flex gap-5 motion-safe:animate-[fade-in_0.45s_var(--ease-out-soft)_both] lg:flex-col lg:gap-4"
-                style={{ animationDelay: `${n * 60}ms` }}
+                className={cn(
+                  "relative flex gap-5 lg:flex-col lg:gap-4",
+                  switched &&
+                    "motion-safe:animate-[rise_500ms_var(--ease-out-soft)_both]",
+                )}
+                style={switched ? { animationDelay: `${120 + n * 70}ms` } : undefined}
               >
                 <span className="relative inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-line bg-bg text-label-lg text-brand tabular-nums">
                   {String(n + 1).padStart(2, "0")}

@@ -42,7 +42,7 @@ export function Section({
       aria-labelledby={hasHeading ? headingId : labelledBy}
       data-theme={tone === "dark" ? "dark" : undefined}
       className={cn(
-        "scroll-mt-20 py-(--spacing-section) lg:py-(--spacing-section-lg)",
+        "scroll-mt-16 py-(--spacing-section-sm) sm:scroll-mt-20 sm:py-(--spacing-section) lg:py-(--spacing-section-lg)",
         deferRender && "cv-auto",
         tone === "sand" && "bg-sand",
         tone === "dark" && "bg-bg text-ink",

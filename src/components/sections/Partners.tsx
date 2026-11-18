@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
 import { PhoneFrame } from "@/components/ui/PhoneFrame";
 import { Reveal } from "@/components/ui/Reveal";
+import { SnapRow } from "@/components/ui/SnapRow";
 import type { Cta, ImageAsset, PartnerAudience } from "@/content/types";
 import { cn, toneClass } from "@/lib/utils";
 
@@ -33,61 +34,64 @@ export function Partners({
 }: PartnersProps) {
   return (
     <Section id="partners" eyebrow={eyebrow} title={title} intro={intro}>
-      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {partners.map((p, i) => (
-          <Reveal
-            as="li"
-            key={p.id}
-            delay={(i % 3) * 0.06}
-            className={cn(toneClass[p.tone], "flex")}
-          >
-            <Card interactive className="group relative flex w-full flex-col">
-              <span className="inline-flex size-10 items-center justify-center rounded-lg bg-(--service-soft) text-(--service-text)">
-                <Icon name={p.icon} className="size-5" />
-              </span>
-              <h3 className="mt-5 text-h3 text-ink">{p.title}</h3>
-              <p className="mt-2 text-body-sm text-muted">{p.description}</p>
-              <ul className="mt-5 space-y-2 text-body-sm text-ink">
-                {p.points.map((pt) => (
-                  <li key={pt} className="check-item">
-                    {pt}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href={p.cta.href}
-                className="mt-auto inline-flex items-center gap-1.5 pt-6 text-label-md text-(--service-text) after:absolute after:inset-0 after:rounded-(--radius-card)"
+      <Reveal stagger targets=":scope ul > li">
+        <SnapRow
+          label="Partners"
+          keys={[...partners.map((p) => p.id), "other-apps"]}
+          gridClassName="sm:grid-cols-2 lg:grid-cols-3"
+          items={[
+            ...partners.map((p) => (
+              <Card
+                key={p.id}
+                interactive
+                className={cn(toneClass[p.tone], "group relative flex w-full flex-col")}
               >
-                {p.cta.label}
-                <Icon
-                  name="arrow-right"
-                  className="size-4 transition-transform group-hover:translate-x-0.5"
-                />
-              </Link>
-            </Card>
-          </Reveal>
-        ))}
-        <Reveal as="li" delay={0.12} className="flex">
-          <div
-            data-theme="dark"
-            className="flex w-full flex-col justify-between rounded-(--radius-card) bg-bg p-6 text-ink"
-          >
-            <div>
-              <h3 className="text-h3">{otherApps.title}</h3>
-              <p className="mt-2 text-body-sm text-muted">{otherApps.detail}</p>
-            </div>
-            <div className="mt-6">
-              <Button
-                href={otherApps.cta.href}
-                size="sm"
-                trailing={<Icon name="arrow-right" className="size-4" />}
-              >
-                {otherApps.cta.label}
-              </Button>
-            </div>
-          </div>
-        </Reveal>
-      </ul>
+                <span className="inline-flex size-10 items-center justify-center rounded-lg bg-(--service-soft) text-(--service-text)">
+                  <Icon name={p.icon} className="size-5" />
+                </span>
+                <h3 className="mt-5 text-h3 text-ink">{p.title}</h3>
+                <p className="mt-2 text-body-sm text-muted">{p.description}</p>
+                <ul className="mt-5 space-y-2 text-body-sm text-ink">
+                  {p.points.map((pt) => (
+                    <li key={pt} className="check-item">
+                      {pt}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={p.cta.href}
+                  className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-6 text-label-md text-(--service-text) after:absolute after:inset-0 after:rounded-(--radius-card)"
+                >
+                  {p.cta.label}
+                  <Icon
+                    name="arrow-right"
+                    className="size-4 transition-transform duration-(--dur-base) ease-out-soft group-focus-within:translate-x-0.5 group-hover:translate-x-0.5"
+                  />
+                </Link>
+              </Card>
+            )),
+            <div
+              key="other-apps"
+              data-theme="dark"
+              className="flex w-full flex-col justify-between rounded-(--radius-card) bg-bg p-6 text-ink"
+            >
+              <div>
+                <h3 className="text-h3">{otherApps.title}</h3>
+                <p className="mt-2 text-body-sm text-muted">{otherApps.detail}</p>
+              </div>
+              <div className="mt-6">
+                <Button
+                  href={otherApps.cta.href}
+                  size="sm"
+                  trailing={<Icon name="arrow-right" className="size-4" />}
+                >
+                  {otherApps.cta.label}
+                </Button>
+              </div>
+            </div>,
+          ]}
+        />
+      </Reveal>
 
       <Reveal className="mt-16">
         <Card padding="none" className="overflow-hidden">
